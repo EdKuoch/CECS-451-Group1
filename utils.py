@@ -3,6 +3,20 @@ import np
 
 
 
+def IncreasePositiveRewards(r):
+    if r > 0:
+        return r*1.5
+    else:
+        return r
+
+
+def IncreaseNegativeRewards(r):
+    if r < 0:
+        return r*5
+    else:
+        return r
+
+
 class NormalizeImage(gym.ObservationWrapper):
     def __init__(self, env):
         super().__init__(env)
@@ -15,7 +29,7 @@ class NormalizeImage(gym.ObservationWrapper):
 class TransposeObservation(gym.ObservationWrapper):
     def __init__(self, env):
         super().__init__(env)
-        self.observation_space = gym.spaces.Box(shape=(96, 96, 1), low=0, high=255)
+        self.observation_space = gym.spaces.Box(shape=(96, 96, 5), low=0, high=255)
 
     def observation(self, obs):
         return np.transpose(np.asarray(obs), (1, 2, 0))

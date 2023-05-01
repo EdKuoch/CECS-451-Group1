@@ -5,36 +5,36 @@ import random
 
 
 class DQNAgent:   
-    # action_space = (
-    #     (-1, 0, 1), # left, brake
-    #     (-1, 1, 0), # left, gas
-    #     (-1, 0, 0), # left, nothing
-    #     (0, 0, 1), # center, brake
-    #     (0, 1, 0), # center, gas
-    #     (0, 0, 0), # center, nothing
-    #     (1, 0, 1), # right, brake
-    #     (1, 1, 0), # right, gas
-    #     (1, 0, 0), # right, nothing
-    # )
+    action_space = (
+        (-1, 0, 1), # left, brake
+        (-1, 1, 0), # left, gas
+        (-1, 0, 0), # left, nothing
+        (0, 0, 1), # center, brake
+        (0, 1, 0), # center, gas
+        (0, 0, 0), # center, nothing
+        (1, 0, 1), # right, brake
+        (1, 1, 0), # right, gas
+        (1, 0, 0), # right, nothing
+    )
 
-    action_space    = [
-            (-1, 1, 0.2), (0, 1, 0.2), (1, 1, 0.2), #           Action Space Structure
-            (-1, 1,   0), (0, 1,   0), (1, 1,   0), #        (Steering Wheel, Gas, Break)
-            (-1, 0, 0.2), (0, 0, 0.2), (1, 0, 0.2), # Range        -1~1       0~1   0~1
-            (-1, 0,   0), (0, 0,   0), (1, 0,   0)
-        ]
+    # action_space    = [
+    #         (-1, 1, 0.2), (0, 1, 0.2), (1, 1, 0.2), #           Action Space Structure
+    #         (-1, 1,   0), (0, 1,   0), (1, 1,   0), #        (Steering Wheel, Gas, Break)
+    #         (-1, 0, 0.2), (0, 0, 0.2), (1, 0, 0.2), # Range        -1~1       0~1   0~1
+    #         (-1, 0,   0), (0, 0,   0), (1, 0,   0)
+    #     ]
 
 
     def __init__(
             self, 
             network             = None, 
             network_data_name   = "",
-            memory_size         = 5000,
+            memory_size         = 1000,
             gamma               = 0.95,  # discount rate
-            epsilon             = 1,   # exploration rate
-            epsilon_min         = 0.01,
-            epsilon_decay       = 0.9999,
-            learning_rate       = 0.01
+            epsilon             = 0,   # exploration rate
+            epsilon_min         = 0.02,
+            epsilon_decay       = 0.999,
+            learning_rate       = 0.0001
     ):
         """
         A DQN agent.
@@ -82,6 +82,7 @@ class DQNAgent:
         if np.random.rand() > self.epsilon:
             act_values = self.model.predict(np.expand_dims(state, axis=0), verbose=0)
             action_index = np.argmax(act_values[0])
+            print(act_values[0])
         else:
             action_index = random.randrange(len(self.action_space))
         return self.action_space[action_index]
@@ -92,6 +93,7 @@ class DQNAgent:
 
 
     def train_from_experience_replay_buffer(self, batch_size):
+        print("Epsilon:", self.epsilon)
         print("Training from experience replay buffer...")
         minibatch = random.sample(self.experience_replay_buffer, batch_size)
         train_x_states = []
@@ -104,6 +106,7 @@ class DQNAgent:
                 target[action_index] = reward
             else:
                 t = self.frozen_model.predict(np.expand_dims(next_state, axis=0), verbose=0)[0]
+                print(t)
                 target[action_index] = reward + self.gamma * np.amax(t)
 
             train_x_states.append(state)
