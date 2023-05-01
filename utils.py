@@ -15,7 +15,7 @@ class NormalizeImage(gym.ObservationWrapper):
 class TransposeObservation(gym.ObservationWrapper):
     def __init__(self, env):
         super().__init__(env)
-        self.observation_space = gym.spaces.Box(shape=(96, 96, 3), low=0, high=255)
+        self.observation_space = gym.spaces.Box(shape=(96, 96, 1), low=0, high=255)
 
     def observation(self, obs):
         return np.transpose(np.asarray(obs), (1, 2, 0))

@@ -20,9 +20,9 @@ class CarRacingEnvironment:
             domain_randomize = False,
             render_mode = None,
             max_episode_steps = 1000,
-            update_target_model_frequency = 5,
+            update_target_model_frequency = 3,
             save_training_frequency = 25,
-            training_batch_size = 64,
+            training_batch_size = 32,
             train = True
     ):
         """
@@ -50,10 +50,10 @@ class CarRacingEnvironment:
         self.train = train
 
         self.env = gym.make("CarRacing-v2", domain_randomize=self.domain_randomize, render_mode=self.render_mode)
-        self.env = GrayScaleObservation(self.env)
+        self.env = GrayScaleObservation(self.env, keep_dim=True)
         self.env = NormalizeImage(self.env)
-        self.env = FrameStack(self.env, self.num_input_frame_stack) 
-        self.env = TransposeObservation(self.env)
+        # self.env = FrameStack(self.env, self.num_input_frame_stack) 
+        # self.env = TransposeObservation(self.env)
         self.env = TimeLimit(self.env, self.max_episode_steps)
         
 
@@ -78,10 +78,12 @@ class CarRacingEnvironment:
             total_episode_reward = 0
             action_frame_counter = 0
             negative_reward_counter = 0
+            global_step_counter = 0
 
             while True:
-                print(action_frame_counter)
                 action_frame_counter += 1
+                global_step_counter +=1
+                print('Episode:', e, '| Steps:', global_step_counter, '| Total Reward:', total_episode_reward)
 
                 # Input the state into the policy to get back the policy's action.
                 action = self.agent.policy(self.env, state)
@@ -90,13 +92,15 @@ class CarRacingEnvironment:
                 current_reward = 0
                 for _ in range(self.num_sticky_actions):
                     next_state, reward, terminated, truncated, info = self.env.step(action)
+                    global_step_counter +=1
+                    print('Episode:', e, '| Steps:', global_step_counter, '| Total Reward:', total_episode_reward)
                     current_reward += reward
 
                     if terminated or truncated:
                         break
                 
                 # If continually getting negative reward 10 times after the tolerance steps, terminate this episode
-                negative_reward_counter = negative_reward_counter + 1 if action_frame_counter > 100 and reward < 0 else 0
+                negative_reward_counter = negative_reward_counter + 1 if global_step_counter > 10 and reward < 0 else 0
                 total_episode_reward += reward
 
                 # Add the experience to the experience replay buffer.
@@ -105,7 +109,7 @@ class CarRacingEnvironment:
                 # Transition to the next state
                 state = next_state
 
-                if terminated or negative_reward_counter >= 25 or total_episode_reward < -5:
+                if terminated or negative_reward_counter >= 25 or total_episode_reward < 0 and global_step_counter == 100:
                     print(f"Episode {e}: {total_episode_reward}")
                     break
                 if len(self.agent.experience_replay_buffer) > self.training_batch_size:
@@ -136,16 +140,16 @@ class CarRacingEnvironment:
                 # Input the state into the policy to get back the policy's action.
                 action = self.agent.policy(self.env, state)
 
-                next_state, reward, terminated, truncated, info = self.env.step(action)
+                # next_state, reward, terminated, truncated, info = self.env.step(action)
 
-                # # Repeat the action for n frames.
-                # current_reward = 0
-                # for _ in range(self.num_sticky_actions):
-                #     next_state, reward, terminated, truncated, info = self.env.step(action)
-                #     current_reward += reward
+                # Repeat the action for n frames.
+                current_reward = 0
+                for _ in range(self.num_sticky_actions):
+                    next_state, reward, terminated, truncated, info = self.env.step(action)
+                    current_reward += reward
 
-                #     if terminated or truncated:
-                #         break
+                    if terminated or truncated:
+                        break
                 
                 total_episode_reward += reward
 

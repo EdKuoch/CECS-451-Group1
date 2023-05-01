@@ -31,10 +31,10 @@ class DQNAgent:
             network_data_name   = "",
             memory_size         = 5000,
             gamma               = 0.95,  # discount rate
-            epsilon             = 1.0,   # exploration rate
-            epsilon_min         = 0.1,
+            epsilon             = 1,   # exploration rate
+            epsilon_min         = 0.01,
             epsilon_decay       = 0.9999,
-            learning_rate       = 0.001
+            learning_rate       = 0.01
     ):
         """
         A DQN agent.
@@ -98,7 +98,7 @@ class DQNAgent:
         train_y_rewards = []
 
         for state, action_index, reward, next_state, done in minibatch:
-            target = self.model.predict(np.expand_dims(state, axis=0), verbose=0)[0]
+            target = self.model.predict(np.expand_dims(state, axis=0), verbose=0, use_multiprocessing=True)[0]
 
             if done:
                 target[action_index] = reward
@@ -110,7 +110,8 @@ class DQNAgent:
             train_y_rewards.append(target)
 
         print("Fitting model to samples from ERB...")
-        self.model.fit(np.array(train_x_states), np.array(train_y_rewards), epochs=1, verbose=0)
+
+        self.model.fit(np.array(train_x_states), np.array(train_y_rewards), epochs=1, verbose=0, use_multiprocessing=True)
 
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay

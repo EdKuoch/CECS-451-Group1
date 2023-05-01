@@ -14,7 +14,7 @@ def main():
         num_episodes            = 500,
         num_input_frame_stack   = 3, 
         num_sticky_actions      = 3, 
-        render_mode             = "human",
+        render_mode             = None,
         train                   = True,
     )
 
