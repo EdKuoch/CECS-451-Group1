@@ -50,11 +50,11 @@ class CarRacingEnvironment:
         self.train = train
 
         self.env = gym.make("CarRacing-v2", domain_randomize=self.domain_randomize, render_mode=self.render_mode)
-        self.env = GrayScaleObservation(self.env)
+        self.env = GrayScaleObservation(self.env, keep_dim=True)
         self.env = NormalizeImage(self.env)
-        self.env = FrameStack(self.env, self.num_input_frame_stack) 
-        self.env = TransposeObservation(self.env)
-        self.env = TransformReward(self.env, IncreasePositiveRewards)
+        # self.env = FrameStack(self.env, self.num_input_frame_stack) 
+        # self.env = TransposeObservation(self.env)
+        # self.env = TransformReward(self.env, IncreasePositiveRewards)
         self.env = TimeLimit(self.env, self.max_episode_steps)
         
 
@@ -133,7 +133,7 @@ class CarRacingEnvironment:
 
     
     def evaluate_agent(self):
-        self.agent.load_model_weights('./save/trial_R_25.h5')
+        self.agent.load_model_weights('./save/trial_100.h5')
 
         for e in range(self.num_episodes):
             # Reset the game for every episode.

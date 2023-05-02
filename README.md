@@ -15,7 +15,7 @@ Referenced:
 
 if by episode 100 it has not reached 50 rewards, i terminate it early 
 
-trial A normal, no frames stacked, one gray input
+trial A normal, no frames stacked, one gray input, network A
 
 
 

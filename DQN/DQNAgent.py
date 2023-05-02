@@ -5,24 +5,24 @@ import random
 
 
 class DQNAgent:   
-    action_space = (
-        (-1, 0, 1), # left, brake
-        (-1, 1, 0), # left, gas
-        (-1, 0, 0), # left, nothing
-        (0, 0, 1), # center, brake
-        (0, 1, 0), # center, gas
-        (0, 0, 0), # center, nothing
-        (1, 0, 1), # right, brake
-        (1, 1, 0), # right, gas
-        (1, 0, 0), # right, nothing
-    )
+    # action_space = (
+    #     (-1, 0, 1), # left, brake
+    #     (-1, 1, 0), # left, gas
+    #     (-1, 0, 0), # left, nothing
+    #     (0, 0, 1), # center, brake
+    #     (0, 1, 0), # center, gas
+    #     (0, 0, 0), # center, nothing
+    #     (1, 0, 1), # right, brake
+    #     (1, 1, 0), # right, gas
+    #     (1, 0, 0), # right, nothing
+    # )
 
-    # action_space    = [
-    #         (-1, 1, 0.2), (0, 1, 0.2), (1, 1, 0.2), #           Action Space Structure
-    #         (-1, 1,   0), (0, 1,   0), (1, 1,   0), #        (Steering Wheel, Gas, Break)
-    #         (-1, 0, 0.2), (0, 0, 0.2), (1, 0, 0.2), # Range        -1~1       0~1   0~1
-    #         (-1, 0,   0), (0, 0,   0), (1, 0,   0)
-    #     ]
+    action_space    = [
+            (-1, 1, 0.2), (0, 1, 0.2), (1, 1, 0.2), #           Action Space Structure
+            (-1, 1,   0), (0, 1,   0), (1, 1,   0), #        (Steering Wheel, Gas, Break)
+            (-1, 0, 0.2), (0, 0, 0.2), (1, 0, 0.2), # Range        -1~1       0~1   0~1
+            (-1, 0,   0), (0, 0,   0), (1, 0,   0)
+        ]
 
 
     def __init__(

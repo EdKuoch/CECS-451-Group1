@@ -5,7 +5,7 @@ import DQN
 
 def main():
     dqn_agent = DQN.DQNAgent(
-        network             = DQN.networks.NetworkFast,
+        network             = DQN.networks.NetworkC,
         network_data_name   = "NetworkA_Test1",
     )
 
