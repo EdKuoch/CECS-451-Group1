@@ -1,3 +1,5 @@
+Code by Van Nguyen for CECS 451 with Group 1 Spring 2023 CSULB
+
 Python 3.9.6 was used.
 
 Packages installed:
@@ -16,7 +18,6 @@ Referenced:
 if by episode 100 it has not reached 50 rewards, i terminate it early 
 
 trial A normal, no frames stacked, one gray input, network A
-
 
 
 
